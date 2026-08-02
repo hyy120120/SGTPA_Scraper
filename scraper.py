@@ -143,10 +143,13 @@ def parse_detail(url):
         "Website": "",
         "Address": "",
         "Description": "",
+        "Category": "",
         "Profile URL": url
     }
 
 
+
+    # Company Name extract
 
     h = s.find("h1")
 
@@ -158,12 +161,33 @@ def parse_detail(url):
         )
 
 
-        if name.lower() not in [
+        if name and name.lower() not in [
             "403",
             "categories"
         ]:
 
             d["Company Name"] = name
+
+
+
+    # Fallback: URL se company name lena
+
+    if not d["Company Name"]:
+
+        slug = url.split("/")[-1]
+
+        slug = re.sub(
+            r"_\d+\.html",
+            "",
+            slug
+        )
+
+        slug = slug.replace(
+            "-",
+            " "
+        )
+
+        d["Company Name"] = slug.title()
 
 
 
@@ -337,11 +361,10 @@ def main():
 
     data = []
 
+    start = 1
 
 
-    for start in tqdm(
-        range(1, 301, 10)
-    ):
+    while True:
 
 
         if start == 1:
@@ -367,6 +390,20 @@ def main():
                 url
             )
 
+
+            # agar page par koi record nahi mila
+            # to scraping stop
+
+            if not result:
+
+                print(
+                    "No more records found. Stopping..."
+                )
+
+                break
+
+
+
             data.extend(
                 result
             )
@@ -379,12 +416,23 @@ def main():
 
 
 
+            # next page offset
+
+            start += 10
+
+
+
         except Exception as e:
+
 
             print(
                 "Page failed:",
                 e
             )
+
+
+            start += 10
+
 
 
 
