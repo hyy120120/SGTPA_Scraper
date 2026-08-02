@@ -61,7 +61,7 @@ def soup(url):
         try:
 
             time.sleep(
-                random.uniform(3, 6)
+                random.uniform(1.5, 3)
             )
 
             r = session.get(
@@ -338,7 +338,7 @@ def scrape_list(url):
 
 
             time.sleep(
-                random.uniform(3,6)
+                random.uniform(1,2)
             )
 
 
